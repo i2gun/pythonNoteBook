@@ -2,17 +2,18 @@ import command_fucntions
 
 loopGoOn = True
 phonebook = command_fucntions.load()
-commands = {"add": command_fucntions.add, "save": command_fucntions.save, "show": command_fucntions.show,
-            "search": command_fucntions.search, "change": command_fucntions.change,
-            "quit": command_fucntions.finish, "exit": command_fucntions.finish}
-
+commands = {"add": command_fucntions.add, "save": command_fucntions.save,
+            "show": command_fucntions.show, "search": command_fucntions.search,
+            "change": command_fucntions.change, "del": command_fucntions.delete
+            }
 while loopGoOn:
     print("-----------------------")
-    print("Вам доступны следующие команды: ", *commands)
-    command = input("Введите новую команду: ")
+    print("Вам доступны следующие команды: add, save, show, search, change, del, quit")
+    if command := input("Введите новую команду: ") == "quit":
+        break
     print("-----------------------")
     try:
-        commands[command]()
+        phonebook = commands[command](phonebook)
     except:
         print("Неверная комманда")
 
