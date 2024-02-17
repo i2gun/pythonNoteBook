@@ -8,13 +8,11 @@ def serialize_datetime(obj):
     
 
 def load() -> dict:
-    json_records = {  1: {'title': "first record", 'text': "Hello World!", 'date': date.today()},
-                      2: {'title': "some record",  'text': "some note",    'date': date.today()}, }
+    # json_records = {  0: {'title': "first record", 'text': "Hello World!", 'date': date.today()},
+    #                   1: {'title': "some record",  'text': "some note",    'date': date.today()}, }
     try:
         with open("notes.json", "r", encoding="utf-8") as fh:
-            # fh.write(dumps(notebook, ensure_ascii=False, default=serialize_datetime, ))
             json_records = loads(fh.read().replace("; ", ", "))
-            print(json_records)
     except:
         print("Загрузка заметок из файла не удалась")
     
@@ -26,11 +24,11 @@ def add(notebook: dict) -> dict:
         notebook = dict()
         id = 0
     else:
-        id = notebook.list() + 1
+        id = len(notebook)
 
     title = input("Введите заголовок заметки: ")
-    for key, value in notebook:
-        if value['title'].lower() == title.lower():
+    for key in notebook:
+        if notebook[key]['title'].lower() == title.lower():
             print("Запись с таким заголовком уже имеется в заметках !")
             print("Добавление данных отменено")
             return
@@ -44,6 +42,7 @@ def add(notebook: dict) -> dict:
 def save(notebook):
     with open("notes.json", "w", encoding="utf-8") as fh:
         fh.write(dumps(notebook, ensure_ascii=False, default=serialize_datetime, separators=("; ", ": ")))
+    print("Заметки успешно сохранены")
     return notebook
 
 
