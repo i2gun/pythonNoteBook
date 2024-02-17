@@ -4,8 +4,6 @@ from datetime import datetime as date
 
 # ------- load -------------------------------------------------------------
 def load() -> dict:
-    json_records = {  0: {'title': "first record", 'text': "Hello World!", 'date': serialize_datetime(date.now())},
-                      1: {'title': "some record",  'text': "some note",    'date': serialize_datetime(date.now())}, }
     try:
         with open("notes.json", "r", encoding="utf-8") as fh:
             json_records = loads(fh.read().replace("; ", ", "))
@@ -40,7 +38,8 @@ def add(notebook: dict) -> dict:
             return notebook
 
     textOfNote = input("Введите текст заметки: ")
-    notebook[id] = {'title': title, 'text': textOfNote, 'date': serialize_datetime(date.now())}
+    notebook[id] = {'title': title, 'text': textOfNote,
+                    'date': serialize_datetime(date.now())}
     print(id, ": ", notebook[id])
 
     return notebook
@@ -81,7 +80,8 @@ def change(notebook):
         print(notebook[k])
         print()
         textOfNote = input("Введите текст заметки: ")
-        notebook[k] = {'title': notebook[k]['title'], 'text': textOfNote, 'date': date.today()}
+        notebook[k] = {'title': notebook[k]['title'], 'text': textOfNote,
+                       'date': serialize_datetime(date.now())}
         print(k, ": ", notebook[k])
 
     return notebook
@@ -102,7 +102,7 @@ def delete(notebook: dict) -> dict:
 
         if yes_no == 'y':
             print(">>>  Запись удалена: ")
-            print(">>>  " + k + ": " + notebook.pop(k))
+            print(">>>  ", k, ": ", notebook.pop(k))
             print()
 
     return notebook
@@ -129,7 +129,7 @@ def findRecords(notebook: dict) -> list:
     res_list = list()
 
     print("    |-----------------------")
-    search_text = input("    | Введите заголовок заметки: ").strip()
+    search_text = input("    | Введите заголовок заметки, либо его часть: ").strip()
     print("    |-----------------------")
     for key, value in notebook.items():
         if search_text in value['title']:
