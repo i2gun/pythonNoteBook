@@ -34,7 +34,8 @@ commands = {"add": command_fucntions.add, "save": command_fucntions.save,
 while loopGoOn:
     print("-----------------------")
     print("Вам доступны следующие команды: add, save, show, search, change, del, quit")
-    if command := input("Введите новую команду: ") == "quit":
+    command = input("Введите команду: ").lower()
+    if command == "quit":
         break
     print("-----------------------")
     try:
