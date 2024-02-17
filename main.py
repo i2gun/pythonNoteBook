@@ -26,6 +26,7 @@ import command_fucntions
 
 loopGoOn = True
 notebook = command_fucntions.load()
+command_fucntions.show(notebook)
 commands = {"add": command_fucntions.add, "save": command_fucntions.save,
             "show": command_fucntions.show, "search": command_fucntions.search,
             "change": command_fucntions.change, "del": command_fucntions.delete
