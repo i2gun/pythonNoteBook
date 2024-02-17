@@ -2,65 +2,61 @@ import json
 from check_functions import check_pattern
 
 
-def load():
-    json_contacts = {"Дядя Ваня": {'phones': [8311654654, 89654515], 'birthday': "05.05.1990", 'email': "12@ya.ru"},
-                     "Дядя Вася": {'phones': [54654541]}}
+def load() -> dict:
+    json_records = {'first record': {'text': "Hello World!", 'date': "17.02.2024"},
+                    'some record': {'text': "some note",  'date': "17.02.2024"}, }
     try:
-        with open("contacts.json", "r", encoding="utf-8") as fh:
-            json_contacts = json.loads(fh.read())
+        with open("notes.json", "r", encoding="utf-8") as fh:
+            json_records = json.loads(fh.read())
     except:
-        print("Загрузка тестового телефонного справочника")
+        print("Загрузка заметок из файла")
 
-    return json_contacts
-
-
-def add():
-    global phonebook
-
-    pattern = (r"^([А-ЯA-Z]|[А-ЯA-Z][\x27а-яa-z]{1,}|[А-ЯA-Z][\x27а-яa-z]{1,}\-([А-ЯA-Z][\x27а-яa-z]{1,}|" +
-               "(оглы)|(кызы)))\040[А-ЯA-Z][\x27а-яa-z]{1,}(\040[А-ЯA-Z][\x27а-яa-z]{1,})?$")
-    fullname = check_pattern(1, pattern, "Введите полное имя", False, 1)
-
-    pattern = r"^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$"
-    phones = check_pattern(1, pattern, "Введите номер телефона", True, 10)
-
-    pattern = "%m/%d/%y"
-    birthday = check_pattern(2, pattern, "Введите дату родения", True, 1)
-
-    pattern = r"^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$"
-    email = check_pattern(1, pattern, "Введите электронную почту", True, 1)
-
-    phonebook[fullname] = {'phones': phones}
-    if birthday != "":
-        phonebook[fullname]['birthday'] = birthday
-    if email != "":
-        phonebook[fullname]['email'] = email
+    return json_records
 
 
-def save():
-    global phonebook
-    with open("contacts.json", "w", encoding="utf-8") as fh:
-        fh.write(json.dumps(phonebook, ensure_ascii=False))
+def add(notebook: dict) -> dict:
+    title = input("Введите заголовок заметки: ")
+    for key, el in notebook:
+        if key.lowercase == title.lowercase:
+            print("Запись с таким заголовком уже имеется в заметках !")
+            print("Добавление данных отменено")
+            return
+
+    phones = input("Введите текст заметки: ")
+
+    dateOfNote = date.today()
+
+    record = dict()
+    record[title] = {'text': phones, 'date': dateOfNote}
+    
+    return notebook.update(record)
 
 
-def show():
-    global phonebook
-    for key, values in phonebook.items():
+def save(notebook : dict) -> dict:
+    with open("notes.json", "w", encoding="utf-8") as fh:
+        fh.write(json.dumps(notebook, ensure_ascii=False))
+    return notebook
+
+
+def show(notebook : dict) -> dict:
+    for key, values in notebook.items():
         print(key, values)
+    return notebook
 
 
-def search():
-    global phonebook
-    for key, values in phonebook.items():
+def search(notebook : dict) -> dict:
+    for key, values in notebook.items():
         print(key, values)
+    return notebook
 
 
-def change():
-    global phonebook
-    for key, values in phonebook.items():
+def change(notebook : dict) -> dict:
+    for key, values in notebook.items():
         print(key, values)
+    return notebook
 
 
-def finish():
-    global loopGoOn
-    loopGoOn = False
+def delete(notebook : dict) -> dict:
+    for key, values in notebook.items():
+        print(key, values)
+    return notebook
