@@ -5,7 +5,7 @@ from datetime import date
 def serialize_datetime(obj): 
     if isinstance(obj, date): 
         return obj.isoformat() 
-    
+
 
 def load() -> dict:
     # json_records = {  0: {'title': "first record", 'text': "Hello World!", 'date': date.today()},
@@ -27,11 +27,11 @@ def add(notebook: dict) -> dict:
         id = len(notebook)
 
     title = input("Введите заголовок заметки: ")
-    for key in notebook:
-        if notebook[key]['title'].lower() == title.lower():
+    for key, value in notebook.items():
+        if value['title'].lower() == title.lower():
             print("Запись с таким заголовком уже имеется в заметках !")
             print("Добавление данных отменено")
-            return
+            return notebook
 
     textOfNote = input("Введите текст заметки: ")
     notebook[id] = {'title': title, 'text': textOfNote, 'date': date.today()}
@@ -40,6 +40,9 @@ def add(notebook: dict) -> dict:
 
 
 def save(notebook):
+    if emptyCheck(notebook):
+        return
+
     with open("notes.json", "w", encoding="utf-8") as fh:
         fh.write(dumps(notebook, ensure_ascii=False, default=serialize_datetime, separators=("; ", ": ")))
     print("Заметки успешно сохранены")
@@ -47,8 +50,7 @@ def save(notebook):
 
 
 def show(notebook):
-    if not notebook:
-        print("Записаня книга пуста")
+    if emptyCheck(notebook):
         return
     
     for key, values in notebook.items():
@@ -57,17 +59,8 @@ def show(notebook):
     return notebook
 
 
-def search(notebook):
-    if not notebook:
-        print("Записаня книга пуста")
-        return
-
-    res_list = list()
-
-    search_text = input("    | Введите заголовок заметки либо его часть: ").strip()
-    for key, value in notebook.items():
-        if search_text in key:
-            res_list.append(key + ": " + str(value))
+def search(notebook: dict) -> dict:
+    res_list = findRecords(notebook)
 
     if res_list:
         print("    | Результаты поиска:")
@@ -80,17 +73,7 @@ def search(notebook):
 
 
 def change(notebook):
-    if not notebook:
-        print("Записаня книга пуста")
-        return
-
-    res_list = list()
-    print("    |-----------------------")
-    search_text = input("    | Введите заголовок заметки для внесения изменений: ").strip()
-    print("    |-----------------------")
-    for key in notebook.items():
-        if search_text in key:
-            res_list.append(key)
+    res_list = findRecords(notebook)
 
     if not res_list:
         print("    | Запись к внесению изменений не найдена")
@@ -106,18 +89,8 @@ def change(notebook):
     return notebook
     
 
-def delete(notebook):
-    if not notebook:
-        print("Записаня книга пуста")
-        return
-
-    res_list = list()
-    print("    |-----------------------")
-    search_text = input("    | Введите заголовок заметки для внесения изменений: ").strip()
-    print("    |-----------------------")
-    for key in notebook.items():
-        if search_text in key:
-            res_list.append(key)
+def delete(notebook: dict) -> dict:
+    res_list = findRecords(notebook)
 
     if not res_list:
         print("    | Запись к внесению изменений не найдена")
@@ -135,3 +108,26 @@ def delete(notebook):
             print()
 
     return notebook
+
+
+def emptyCheck(notebook: dict) -> bool:
+    if not notebook:
+        print("Записная книга пуста")
+        return True
+    return False
+
+
+def findRecords(notebook: dict) -> dict:
+    if emptyCheck(notebook):
+        return
+
+    res_list = list()
+
+    print("    |-----------------------")
+    search_text = input("    | Введите заголовок заметки для внесения изменений: ").strip()
+    print("    |-----------------------")
+    for key, value in notebook.items():
+        if search_text in value['title']:
+            res_list.append(key + ": " + str(value))
+    
+    return res_list
